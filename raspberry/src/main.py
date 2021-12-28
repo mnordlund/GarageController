@@ -12,7 +12,7 @@ firebaseconfig = "/home/pi/firebaseconfig.json"
 
 
 def init():
-    logging.basicConfig(filename=logfilename, format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    logging.basicConfig(filename=logfilename, format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.ERROR)
     log.setLevel(logging.INFO)
     log.setLevel(logging.DEBUG) # Set when debugging
 
@@ -48,8 +48,14 @@ def main() -> int:
     log.debug("GarageController starting")
 
     board.init()
-    while not fb.init(firebaseconfig):
+    fb.init(firebaseconfig)
+
+    log.debug("Waiting for database to connect")
+
+    while not fb.isConnected():
         time.sleep(3)
+
+    log.debug("Database connected")
 
     fb.isOperateCommand() # If operate is set on bootup ignore it as it could be old.
 

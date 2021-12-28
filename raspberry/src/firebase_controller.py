@@ -6,36 +6,51 @@ import logging
 import sys
 
 log = logging.getLogger("gc.fbc")
-commands_ref: db.Reference
+app: firebase_admin.App
 
 
 def init(firebaseconfig: str) -> bool:
     global commands_ref
+    global app
+
     log.debug("Initializing firebase")
     try:
         file = open(firebaseconfig)
         cfg = json.load(file)
     except:
         log.critical("Unable to read firebase config file:", firebaseconfig)
-        sys.exit(0)
-
-    cred = credentials.Certificate(cfg["credentials"])
-    try:
-        firebase_admin.initialize_app(cred, {'databaseURL':cfg["database"]})
-        commands_ref = db.reference('/commands')
-    except:
-        log.warning("Failed to connect to firebase")
         return False
+
+    try:
+        cred = credentials.Certificate(cfg["credentials"])
+        app = firebase_admin.initialize_app(cred, {'databaseURL':cfg["database"]})
+    except:
+        log.critical("Failed to initialize firebase")
+        return False
+
     return True
+
+def isConnected() -> bool:
+    try:
+        ref = db.reference('/')
+        ref.get(shallow=True)
+        log.debug("Database connected")
+        return True
+    except:
+        log.debug("Database not connected")
+        return False
+
 
 def isOperateCommand() -> bool:
     try:
-        cmds = commands_ref.get()
+        ref = db.reference('/commands')
+        cmds = ref.get()
+        if(cmds['operate']):
+            cmds['operate'] = False
+            ref.update(cmds)
+            return True
     except:
         log.error("Failed to read commands from firebase")
-    if(cmds['operate']):
-        cmds['operate'] = False
-        commands_ref.update(cmds)
-        return True
-
+    
     return False
+
