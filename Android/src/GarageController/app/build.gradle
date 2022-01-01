@@ -17,6 +17,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "DB_URL", "${GarageController_db_url}")
+        buildConfigField("Double", "LONG", "${GarageController_long}")
+        buildConfigField("Double", "LAT", "${GarageController_lat}")
 
     }
 
@@ -42,6 +44,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.firebase:firebase-common-ktx:19.5.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.1'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
