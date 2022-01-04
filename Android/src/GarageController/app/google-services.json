@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "269592333306",
+    "firebase_url": "https://garagecontroller-d26d8-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "garagecontroller-d26d8",
+    "storage_bucket": "garagecontroller-d26d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269592333306:android:d8e9375a455b2fa1163243",
+        "android_client_info": {
+          "package_name": "se.mnordlund.garagecontroller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269592333306-kmgqk4knj8n51hai8c207toe8budp9a9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "se.mnordlund.garagecontroller",
+            "certificate_hash": "b73868ca891489e8a8bcaf74860c737dfa4213a9"
+          }
+        },
+        {
+          "client_id": "269592333306-b2pk5kna0n4m3aeujk8c4da475iaf9cu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARqQl1r044Qg35iPTON-rPowAk3JAlpMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269592333306-b2pk5kna0n4m3aeujk8c4da475iaf9cu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
