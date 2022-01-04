@@ -8,6 +8,8 @@ import sys
 log = logging.getLogger("gc.fbc")
 app: firebase_admin.App
 
+status: dict = {}
+
 
 def init(firebaseconfig: str) -> bool:
     global commands_ref
@@ -53,4 +55,22 @@ def isOperateCommand() -> bool:
         log.error("Failed to read commands from firebase")
     
     return False
+
+def isLocked() -> bool:
+    try:
+        ref = db.reference('/commands')
+        lock = ref.child('lock').get()
+        if(lock):
+            ref.child('operate').set(False)
+        return lock
+    except:
+        log.error("Failed to read lock")
+        return True
+
+def writeStatus():
+    try:
+        ref = db.reference('/status')
+        ref.update(status)
+    except:
+        log.error("Failed to update status to database")
 
