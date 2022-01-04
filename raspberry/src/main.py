@@ -69,8 +69,7 @@ def main() -> int:
         locked = fb.isLocked()
         if(not locked):
             if(fb.isOperateCommand()):
-                #door.operateDoor()
-                log.debug("Should open door!")
+                door.operateDoor()
 
         fb.status['doorClosed'] = door.isDoorClosed()
         fb.status['doorOpened'] = door.isDoorOpened()
