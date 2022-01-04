@@ -1,1 +1,1 @@
-# Garage controller - Android Application
+# Garage Controller - Android Application
