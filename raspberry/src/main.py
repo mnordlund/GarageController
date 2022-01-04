@@ -5,6 +5,7 @@ import firebase_controller as fb
 import board
 import doorHandler as door
 import logging
+import distance
 
 log = logging.getLogger("gc")
 logfilename = None # If no log is set through arguments log to console
@@ -29,7 +30,6 @@ def parseArgs():
 
     if(len(sys.argv) > 1):
         logfilename = sys.argv.pop(1)
-        print("logfilename:", logfilename )
     if(len(sys.argv) > 1):
         firebaseconfig = sys.argv.pop(1)
 
@@ -45,25 +45,34 @@ def main() -> int:
     signal.signal(signal.SIGINT, sigintHandler)
     signal.signal(signal.SIGTERM, sigintHandler)
 
-    log.debug("GarageController starting")
+    log.info("GarageController starting")
 
     board.init()
     fb.init(firebaseconfig)
 
-    log.debug("Waiting for database to connect")
+    log.info("Waiting for database to connect")
 
     while not fb.isConnected():
         time.sleep(3)
 
-    log.debug("Database connected")
+    log.info("Database connected")
 
     fb.isOperateCommand() # If operate is set on bootup ignore it as it could be old.
 
-    log.debug("Entering main loop")
+    log.info("Entering main loop")
+
+    closed = True
+    opened = True
+
     while True: # Loop forever
+        distance.updateDistance()
         if(fb.isOperateCommand()):
             door.operateDoor()
-            
+
+        fb.status['doorClosed'] = door.isDoorClosed()
+        fb.status['doorOpened'] = door.isDoorOpened()
+        fb.status['carInGarage'] = door.isCarInGarage()
+        fb.writeStatus()
         time.sleep(1)
 
 
