@@ -10,7 +10,7 @@ REEDPIN = 23
 
 def init():
     """ Initializes GPIOS """
-    log.debug("Setup GPIO")
+    log.info("Setup GPIO")
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(DOORPIN, GPIO.OUT)
     GPIO.setup(ECHOPIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -19,5 +19,5 @@ def init():
 
 def cleanup():
     """ Cleans up GPIOS """
-    log.debug("Clean up GPIOS")
+    log.info("Clean up GPIOS")
     GPIO.cleanup()

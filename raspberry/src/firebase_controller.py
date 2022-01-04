@@ -5,10 +5,14 @@ from firebase_admin import db
 import logging
 import sys
 
+import doorHandler as door
+
 log = logging.getLogger("gc.fbc")
 app: firebase_admin.App
 
-status: dict = {}
+status: dict = {'locked': False, 'doorClosed': False, 'doorOpened': False, 'carInGarage': False}
+
+listeners = []
 
 
 def init(firebaseconfig: str) -> bool:
@@ -32,6 +36,19 @@ def init(firebaseconfig: str) -> bool:
 
     return True
 
+def cleanup():
+    log.info("Cleaning up firebase connections")
+    for listener in listeners:
+        listener.close()
+
+
+def writeStatus():
+    try:
+        ref = db.reference('/status')
+        ref.update(status)
+    except:
+        log.error("Failed to update status to database")
+
 def isConnected() -> bool:
     try:
         ref = db.reference('/')
@@ -41,7 +58,6 @@ def isConnected() -> bool:
     except:
         log.debug("Database not connected")
         return False
-
 
 def isOperateCommand() -> bool:
     try:
@@ -67,10 +83,20 @@ def isLocked() -> bool:
         log.error("Failed to read lock")
         return True
 
-def writeStatus():
-    try:
-        ref = db.reference('/status')
-        ref.update(status)
-    except:
-        log.error("Failed to update status to database")
+def lockCallback(event: db.Event):
+    if(event.data != status['locked']):
+        status['locked'] = event.data
+        log.info("Locked: " + str(status['locked']))
+        db.reference('/commands/operate').set(False)
+        writeStatus()
 
+def operateCallback(event: db.Event):
+    if(event.data == True and not status['locked']):
+        door.operateDoor()
+        db.reference('/commands/operate').set(False)
+
+def setupCallbacks():
+    lockref = db.reference('/commands/lock')
+    listeners.append(lockref.listen(lockCallback))
+    operateref = db.reference('/commands/operate')
+    operateref.listen(operateCallback)
