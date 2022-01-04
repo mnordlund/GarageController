@@ -66,12 +66,17 @@ def main() -> int:
 
     while True: # Loop forever
         distance.updateDistance()
-        if(fb.isOperateCommand()):
-            door.operateDoor()
+        locked = fb.isLocked()
+        if(not locked):
+            if(fb.isOperateCommand()):
+                #door.operateDoor()
+                log.debug("Should open door!")
 
         fb.status['doorClosed'] = door.isDoorClosed()
         fb.status['doorOpened'] = door.isDoorOpened()
         fb.status['carInGarage'] = door.isCarInGarage()
+        fb.status['locked'] = locked
+        
         fb.writeStatus()
         time.sleep(1)
 

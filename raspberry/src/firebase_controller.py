@@ -56,6 +56,17 @@ def isOperateCommand() -> bool:
     
     return False
 
+def isLocked() -> bool:
+    try:
+        ref = db.reference('/commands')
+        lock = ref.child('lock').get()
+        if(lock):
+            ref.child('operate').set(False)
+        return lock
+    except:
+        log.error("Failed to read lock")
+        return True
+
 def writeStatus():
     try:
         ref = db.reference('/status')
