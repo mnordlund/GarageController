@@ -6,11 +6,11 @@ import board
 import doorHandler as door
 import logging
 import distance
+import os
 
 log = logging.getLogger("gc")
 logfilename = None # If no log is set through arguments log to console
 firebaseconfig = "/home/pi/firebaseconfig.json"
-
 
 def init():
     logging.basicConfig(filename=logfilename, filemode = 'a', format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.ERROR)
@@ -22,8 +22,9 @@ def sigintHandler(sig, frame):
     """ Handles ctrl - c """
     log.debug("sigint handler")
     board.cleanup()
-    fb.cleanup() # Not working properly for now an could hang, so we skip the cleanup
-    sys.exit(0)
+    #fb.cleanup() # Not working properly for now an could hang, so we skip the cleanup
+    log.debug("Exiting")
+    os._exit(0)
 
 def parseArgs():
     global logfilename
@@ -62,7 +63,7 @@ def main() -> int:
     fb.setupCallbacks()
     log.info("Entering main loop")
 
-    while True: # Loop forever
+    while True:
         distance.updateDistance()
 
         update = False
@@ -78,7 +79,7 @@ def main() -> int:
         
         if(door.isCarInGarage() != fb.status['carInGarage'] and not fb.status['doorOpened']):
             fb.status['carInGarage'] = door.isCarInGarage()
-            log.info("Car in garage: " + str(fb.status['carInGarage']))
+            log.info("Car in garage: " + str(fb.status['carInGarage']) + "(dist: {:.2f})".format(distance.getDistance()))
             update = True
         
         if(update):
@@ -88,4 +89,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
