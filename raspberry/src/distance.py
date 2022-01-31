@@ -58,7 +58,6 @@ def updateDistance():
 
     if medianEcho < 0.03:
         distance = (medianEcho * 34300) / 2
-        log.debug("Distance: {:.2f}".format(distance))
 
 def getDistance() -> float:
     """ Returns the current distance """
