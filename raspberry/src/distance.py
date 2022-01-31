@@ -49,6 +49,7 @@ def median(a, b, c):
     return a
 
 def updateDistance():
+    global distance
     echos = []
     for x in range(3):
         echos.append(readDistance())
