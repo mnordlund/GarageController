@@ -60,10 +60,20 @@ def main() -> int:
     log.info("Database connected")
 
     fb.isOperateCommand() # If operate is set on bootup ignore it as it could be old.
-    fb.setupCallbacks()
+    # fb.setupCallbacks() # Callbacks seems to not work properly currently, functionality in beta.
     log.info("Entering main loop")
 
+    counter = 0
+
     while True:
+        if((counter % 4) == 0):
+            if(not fb.isLocked()):
+                if(fb.isOperateCommand()):
+                    door.operateDoor()
+
+
+
+        # Check sensors
         distance.updateDistance()
 
         update = False
@@ -85,6 +95,7 @@ def main() -> int:
         if(update):
             fb.writeStatus()
 
+        counter +=1
         time.sleep(0.5)
 
 
